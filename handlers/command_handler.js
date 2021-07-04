@@ -8,9 +8,9 @@ module.exports = (client, Discord) => {
             const command = require(`../commands/${dirs}/${file}`)
             if (command.name) {
                 client.commands.set(command.name, command)
-            
+                console.log(`✔️ Command Loaded - ${command.name} `);
             }
         }
     }
-    ['mod', 'fun', 'econ', 'reactionroles', 'roleplay'].forEach(e => load_dir(e))
+    ['mod', 'fun', 'economy', 'reactionroles', 'roleplay', 'utility'].forEach(e => load_dir(e))
 }
