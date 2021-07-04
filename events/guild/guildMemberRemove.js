@@ -8,7 +8,7 @@ module.exports = (Discord, client, member) =>{
     const leavesEmbed = new Discord.MessageEmbed()
 	.setColor('#594033')
 	.setTitle('Bye Felica')
-	.setDescription(`${member} has left ${member.guild.name} - fuck off ya cunt <a:marshallclean:786077939703873547>`);
+	.setDescription(member.displayName +` has left ${member.guild.name} - fuck off ya cunt <a:marshallclean:786077939703873547>`);
 
 channel.send(leavesEmbed);
    
