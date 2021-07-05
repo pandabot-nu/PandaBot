@@ -8,6 +8,9 @@ roleplay commands - hug, kiss etc, currently 56 commands
 
 economy commands - bal, addbal, rmvbal, give, beg, work, daily, double or nothing, coinflip
 
+utility commands - emojiadd, server info, user info, help (WIP)
+
 planned updates:
 music bot
 economy: blackjack, roll dice, slots, shop, buy
+utility: member count
