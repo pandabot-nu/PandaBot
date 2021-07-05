@@ -1,4 +1,6 @@
 const { MessageEmbed } = require("discord.js")
+const moment = require('moment') // npm i moment
+moment.locale('en-au')
 
 module.exports = {
     name: "serverinfo",
@@ -12,7 +14,7 @@ module.exports = {
 const { guild } = message
 const emojicount = message.guild.emojis.cache 
 const members = message.guild.members.cache
-        const { name, owner, roles, channels, createdAt, premiumSubscriptionCount, memberCount, region, server } = message.guild
+        const { name, owner, roles, channels, premiumSubscriptionCount, memberCount, region, server } = message.guild
         message.channel.send(
             new Discord.MessageEmbed()
                 .setTitle(name)
@@ -27,9 +29,9 @@ const members = message.guild.members.cache
                 .addField('Member Count:-', `Total: ${members.size} | Human: ${members.filter(member => !member.user.bot).size} | Bot: ${members.filter(member => member.user.bot).size}`) 
                 .addField('Emoji Count:-', `Total: ${emojicount.size} | Non Animated: ${emojicount.filter(emoji => !emoji.animated).size} | Animated: ${emojicount.filter(emoji => emoji.animated).size}`)
                 .addField('Channel Count:-', `Category: ${guild.channels.cache.filter(channel => channel.type == 'category').size} | Text: ${guild.channels.cache.filter(channel => channel.type == 'text').size} | Voice: ${guild.channels.cache.filter(channel => channel.type == 'voice').size}`)
-                .setFooter(`Created on`)
+.addField('Server Creation Date (UTC):-', moment.utc(message.guild.createdAt).format('LLLL'))
                 .setColor('RANDOM')
-                .setTimestamp(createdAt)
+               
         )
             .catch((e) => message.channel.send(`error: ${e.message}`))
     }
