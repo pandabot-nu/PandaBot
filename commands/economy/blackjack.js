@@ -5,6 +5,7 @@ const Discord = require("discord.js")
 module.exports = {
     name: "blackjack",
     aliases: ["bj", "21"],
+    usage: "+blackjack [bet amount]",
     permissions: [],
     description: "Plays blackjack against PandaBot for PandaCoins",
     async execute(client, message, args, Discord, profileData) {
@@ -16,13 +17,7 @@ module.exports = {
         let guildId = message.guild.id
         let coindb = await economy.getCoins(userId)
 
-        if (args[0] === 'all' || args[0] === 'max') {
-            coins = coindb;
-        } else {
-            coins = parseInt(args[0]);
-        }
-
-        if (!coins || coins < 1) {
+        if (!coins || coins < 1 || isNaN) {
             message.channel.send("Please provide a vaild amount of PandaCoins to bet!")
             return
         }
@@ -162,9 +157,9 @@ module.exports = {
 
             const gambleEmbed = new Discord.MessageEmbed()
                 .setColor('#000001')
-                .setTitle(user.username + `'s game table` + '\n___')
-                .addField(user.username + 'Cards', cardsMsg)
-                .addField('Dealer\'s Cards', dealerMsg)
+                .setTitle(user.displayName + `'s game table` + '\n___')
+                .addField(user.displayName + `'s Cards`, cardsMsg)
+                .addField(`Dealer's Cards`, dealerMsg)
                 .addField(title, msg);
 
             message.channel.send(gambleEmbed);
@@ -174,32 +169,32 @@ module.exports = {
             if (player.score === 21) {
                 bet('bjWin');
                 gameOver = true;
-                await endMsg(`${user.username} has blackjack; **${user.username} wins!!** You have won ${bjCoins} PandaCoins! Congratulations!!`)
+                await endMsg(`${user.displayName} has blackjack; **${user.displayName} wins!!** You have won ${bjCoins} PandaCoins! Congratulations!!`)
             }
             if (player.score > 21) {
                 bet('lose');
                 gameOver = true;
-                await endMsg(`${user.username} busted; PandaBot wins, **${user.username} loses**. You have lost ${coins} PandaCoins....Better luck next time....`)
+                await endMsg(`${user.displayName} busted; PandaBot wins, **${user.displayName} loses**. You have lost ${coins} PandaCoins....Better luck next time....`)
             }
             if (dealer.score === 21) {
                 bet('lose');
                 gameOver = true;
-                await endMsg(`PandaBot has blackjack; PandaBot wins, **${user.username} loses**. You have lost ${coins} PandaCoins....Better luck next time....`)
+                await endMsg(`PandaBot has blackjack; PandaBot wins, **${user.displayName} loses**. You have lost ${coins} PandaCoins....Better luck next time....`)
             }
             if (dealer.score > 21) {
                 bet('win');
                 gameOver = true;
-                await endMsg(`PandaBot busted; **${user.username} wins**! You have won ${coins} PandaCoins! Congratulations!!`)
+                await endMsg(`PandaBot busted; **${user.displayName} wins**! You have won ${coins} PandaCoins! Congratulations!!`)
             }
             if (dealer.score >= 17 && player.score > dealer.score && player.score < 21) {
                 bet('win');
                 gameOver = true;
-                await endMsg(`PandaBot stands with ${dealer.score}; **${user.username} wins**! You have won ${coins} PandaCoins! Congratulations!!`)
+                await endMsg(`PandaBot stands with ${dealer.score}; **${user.displayName} wins**! You have won ${coins} PandaCoins! Congratulations!!`)
             }
             if (dealer.score >= 17 && player.score < dealer.score && dealer.score < 21) {
                 bet('lose');
                 gameOver = true;
-                await endMsg(`PandaBot stands with ${dealer.score}; PandaBot wins, **${user.username} loses**. You have lost ${coins} PandaCoins....Better luck next time....`)
+                await endMsg(`PandaBot stands with ${dealer.score}; PandaBot wins, **${user.displayName} loses**. You have lost ${coins} PandaCoins....Better luck next time....`)
             }
             if (dealer.score >= 17 && player.score === dealer.score && dealer.score < 21) {
                 gameOver = true;
@@ -243,6 +238,7 @@ module.exports = {
         function stand() {
             while (dealer.score < 17) {
                 dealerDraw();
+                createEmbedMessage()
             }
             endGame();
         }
