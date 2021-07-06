@@ -1,21 +1,71 @@
-const { hangman } = require('reconlx')
-
+const words = require('../../utils/words.json');
+const { stripIndents } = require('common-tags')
 module.exports = {
-    name : 'hangman',
-    description: 'Play hangman with the server!',
-    async execute(client, message, args){
-                const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0])
-        if(!channel) return message.channel.send('Please specify a channel')
-        const word = ["Sherb","Judie","Audie","Raymond","Cyd","Dom","Megan","Reneigh","Vivian","Hopkins","June","Piper","Paolo","Hornsby","Stella","Tybalt","Huck","Sylvana","Boris","Wade","Carrie","Ketchup","Rex","Stu","Ursala","Jacob","Maddie","Billy","Boyd","Bitty","Maggie","Murphy","Plucky","Sandy","Claude","Raddle","Julia","Louie","Bea","Admiral","Ellie","Boots","Weber","Candi","Leopold","Spike","Cashmere","Tad","Norma","Gonzo","Sprocket","Snooty","Olive","Dobie","Buzz","Cleo","Ike","Tasha","Rilla","Marty","\u00c9toile","Chai","Chelsea","Toby","Isabelle","Brewster","Katrina","Phineas","Celeste","Tommy","Gracie","Leilani","Resetti","Timmy","Lottie","Shrunk","Pav\u00e9","Gulliver","Redd","Zipper","Goldie","Stitches","Pinky","Mott","Mallary","Rocco","Katt","Graham","Peaches","Dizzy","Penelope","Boone","Broffina","Croque","Pashmina","Shep","Lolly","Erik","Dotty","Pierce","Queenie","Fang","Frita","Tex","Melba","Bones","Anabelle","Rudy","Naomi","Peewee","Tammy","Olaf","Lucy","Elmer","Puddles","Rory","Elise","Walt","Mira","Pietro","Aurora","Papi","Apple","Rod","Purrl","Static","Celia","Zucker","Peggy","Ribbot","Annalise","Chow","Sylvia","Jacques","Sally","Doc","Pompom","Tank","Becky","Rizzo","Sydney","Barold","Nibbles","Kevin","Gloria","Lobo","Hippeux","Margie","Lucky","Rosie","Rowan","Maelle","Bruce","O'Hare","Gayle","Cranston","Frobert","Grizzly","Cally","Simon","Iggly","Angus","Twiggy","Robin","Rover","Blathers","Tom Nook","Pelly","Phyllis","Pete","Mabel","Leif","Wendell","Cyrus","Grams","Timmy","Digby","Don Resetti","Isabelle","Franklin","Jingle","Lily","Anchovy","Tabby","Kody","Miranda","Del","Paula","Ken","Mitzi","Rodeo","Bubbles","Cousteau","Velma","Elvis","Canberra","Colton","Marina","Spork","Freckles","Bam","Friga","Ricky","Deirdre","Hans","Chevre","Drago","Tangy","Mac","Eloise","Wart Jr.","Hazel","Beardo","Ava","Chester","Merry","Genji","Greta","Wolfgang","Diva","Klaus","Daisy","Stinky","Tammi","Tucker","Blanche","Gaston","Marshall","Gala","Joey","Pippy","Buck","Bree","Rooney","Curlos","Skye","Moe","Flora","Hamlet","Astrid","Monty","Dora","Biskit","Victoria","Lyman","Violet","Franklin","Chadder","Merengue","Cube","Claudia","Curly","Boomer","Caroline","Sparro","Baabara","Rolf","Maple","Antonio","Soleil","Apollo","Derwin","Francine","Chrissy","Isabelle","Tom Nook","DJ KK","Sable","Kapp'n","Resetti","Joan","Timmy","Digby","Pascal","Harriet","Redd","Saharah","Luna","Tortimer","Lyle","Lottie","Bob","Fauna","Curt","Portia","Leonardo","Cheri","Kyle","Al","Renee","Lopez","Jambette","Rasher","Tiffany","Sheldon","Bluebear","Bill","Kiki","Deli","Alli","Kabuki","Patty","Jitters","Gigi","Quillson","Marcie","Puck","Shari","Octavian","Winnie","Knox","Sterling","Bonbon","Punchy","Opal","Poppy","Limberg","Deena","Snake","Bangle","Phil","Monique","Nate","Samson","Tutu","T-Bone","Mint","Pudge","Midge","Gruff","Flurry","Clyde","Bella","Biff","Yuka","Lionel","Flo","Cobb","Amelia","Jeremiah","Cherry","Roscoe","Truffles","Eugene","Eunice","Goose","Annalisa","Benjamin","Pancetti","Chief","Bunnie","Clay","Diana","Axel","Muffy","Henry","Bertha","Cyrano","Peanut","Cole","Willow","Roald","Molly","Walker","K.K. Slider","Reese","Kicks","Labelle","Copper","Booker","Katie","Tommy","Porter","Lelia","Shrunk","Don Resetti","Isabelle","Blanca","Nat","Chip","Jack","Poncho","Felicity","Ozzie","Tia","Lucha","Fuschia","Harry","Gwen","Coach","Kitt","Tom","Tipper","Prince","Pate","Vladimir","Savannah","Kidd","Phoebe","Egbert","Cookie","Sly","Blaire","Avery","Nana","Peck","Olivia","Cesar","Carmen","Rodney","Scoot","Whitney","Broccolo","Coco","Groucho","Wendy","Alfonso","Rhonda","Butch","Gabi","Moose","Timbra","Zell","Pekoe","Teddy","Mathilda","Ed","Bianca","Filbert","Kitty","Beau","Nan","Bud","Ruby","Benedict","Agnes","Julian","Bettina","Jay","Sprinkle","Flip","Hugh","Hopper","Pecan","Drake","Alice","Camofrog","Anicotti","Chops","Charlise","Vic","Ankha","Drift","Vesta","Marcel","Pango","Keaton","Gladys","Hamphrey","Freya","Kid Cat","Agent S","Big Top","Rocket","Campsite","Pier","Island","Able Sisters","Nooks Cranny","CJ","Flick","Nook Miles Ticket","Mystery Island","Beach","Secret Beach","Terraforming"]
-        let pick = word[Math.floor(Math.random() * word.length)];
+    name: "hangman",
+    aliases: ["hm"],
+    usage: [],
+    permissions: [],
+    description: "Plays a game of hangman with Animal Crossing words",
 
-        const hang = new hangman({
-            message: message,
-            word: pick,
-            client: client,
-            channelID: channel.id,
-        })
+    async execute(client, message, args, Discord) {
+        const word = words[Math.floor(Math.random() * words.length)].toLowerCase();
+        let points = 0;
+        let displayText = null;
+        let guessed = false;
+        const confirmation = [];
+        const incorrect = [];
+        const display = new Array(word.length).fill('_');
+        while (word.length !== confirmation.length && points < 7) {
+            await message.channel.send(stripIndents`
+                ${displayText === null ? '**Here we go!**' : displayText ? '**Good job!**' : '**Nope!**'}
+                \`${display.join(' ')}\`. **Which letter do you choose**?
+                **Incorrect Tries:** ${incorrect.join(', ') || '**None**'}
+                \`\`\`
+                ___________
+                |     ${points > 0 ? '|' : ''}
+                |     ${points > 1 ? 'O' : ''}
+                |    ${points > 3 ? '—' : ' '}${points > 2 ? '|' : ''}${points > 4 ? '—' : ''}
+                |    ${points > 5 ? '/' : ''} ${points > 6 ? '\\' : ''}
+                ===========
+                \`\`\`
+            `);
+            const filter = res => {
+                const choice = res.content.toLowerCase();
+                return !confirmation.includes(choice) && !incorrect.includes(choice);
+            };
+            const guess = await message.channel.awaitMessages(filter, {
+                max: 1,
+                time: 30000
+            });
+            if (!guess.size) {
+                await message.channel.send('**Sorry, time is up!**');
+                break;
+            }
+            const choice = guess.first().content.toLowerCase();
+            if (choice === 'end') break;
+            if (choice.length > 1 && choice === word) {
+                guessed = true;
+                break;
+            } else if (word.includes(choice)) {
+                displayText = true;
+                for (let i = 0; i < word.length; i++) {
+                    if (word.charAt(i) !== choice) continue; // eslint-disable-line max-depth
+                    confirmation.push(word.charAt(i));
+                    display[i] = word.charAt(i);
+                }
+            } else {
+                displayText = false;
+                if (choice.length === 1) incorrect.push(choice);
+                points++;
+            }
+        }
 
-        hang.start();
+        if (word.length === confirmation.length || guessed) {
+            return message.channel.send(stripIndents`
+                **You won, it was ${word}!**`);
+        }
+        return message.channel.send(stripIndents`
+            **Too bad... It was ${word}**...*Dumbass*...<a:bearlaughing:827654744642289716>`);
+
     }
 }
