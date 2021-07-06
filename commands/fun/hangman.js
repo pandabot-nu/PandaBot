@@ -65,7 +65,7 @@ module.exports = {
                 **You won, it was ${word}!**`);
         }
         return message.channel.send(stripIndents`
-            **Too bad... It was ${word}**...*Dumbass*...<a:bearlaughing:827654744642289716>`);
+            **Too bad... It was ${word}**...<a:bearlaughing:827654744642289716>`);
 
     }
 }
