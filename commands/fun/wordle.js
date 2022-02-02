@@ -2,7 +2,7 @@ const { MessageAttachment } = require('discord.js');
 const fs = require('fs');
 var csv = require('jquery-csv');
 const Canvas = require('canvas');
-const words = require
+const words = require('../../utils/words.json')
 
 function GetAnswer()
 {
