@@ -2,13 +2,20 @@ const { MessageAttachment } = require('discord.js');
 const fs = require('fs');
 var csv = require('jquery-csv');
 const Canvas = require('canvas');
-const words = require('../../utils/words.json')
+const words = require('../../utils/wordleWords.json')
+module.exports = {
+name: "wordle",
+aliases: [],
+usage: [],
+permissions: [],
+description: "Play wordle with animal crossing villager and NPC names!",
+
 
 function GetAnswer()
 {
     //randomly select answer from list of 600 words
-    var j = Math.floor(Math.random() * answers.length);
-    return answers[j].toUpperCase();
+    var j = Math.floor(Math.random() * words.length);
+    return words[j].toUpperCase();
 }
 
 const ValidGuess = (guess) => 
@@ -367,6 +374,4 @@ function ShowWordleStats(msg)
         })})
 }
 
-module.exports = { LoadNewWordle, PlayWordle, ShowWordleStats};
-
-answers = words
+}
