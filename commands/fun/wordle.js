@@ -369,4 +369,4 @@ function ShowWordleStats(msg)
 
 module.exports = { LoadNewWordle, PlayWordle, ShowWordleStats};
 
-answers = []
+answers = words
