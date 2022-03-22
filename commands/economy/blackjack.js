@@ -6,23 +6,50 @@ module.exports = {
     name: "blackjack",
     aliases: ["bj", "21"],
     permissions: [],
+    usage: "[bet amount]",
+    cooldown: 0,
     description: "Plays blackjack against PandaBot for PandaCoins",
     async execute(client, message, args, Discord, profileData) {
+      if (message.channel.id !== '868444993340182558')
+        return;
 
-        let user = message.author;
-        let coins = parseInt(args[0]);
-        let bjCoins = (coins * 2)
-        let userId = user.id
-        let guildId = message.guild.id
-        let coindb = await economy.getCoins(userId)
-       
+        const user = message.author;
+        const coins = parseInt(args[0]);
+        const bjCoins = (coins * 2)
+        const userId = user.id
+        const guildId = message.guild.id
+        const coindb = await economy.getCoins(guildId, userId)
+        const tarStr = await client.users.cache.get(userId)
+
+        let thumb = ["https://i.imgur.com/Kkn7A8G.png", "https://i.imgur.com/OQo1xkQ.png"]
+        let pic = thumb[Math.floor(Math.random() * thumb.length)]
+
         if (!coins || coins < 1 || isNaN(coins)) {
-            message.channel.send("Please provide a vaild amount of PandaCoins to bet!")
+            let url = client.users.fetch(userId);
+            url.then(function (targetURL) {
+                var imgURL = targetURL.displayAvatarURL();
+                let fEmbed = new Discord.MessageEmbed()
+                    .setAuthor(`${user.username}#${user.discriminator}`, `${imgURL}`)
+                    .setColor("RED")
+                    .setDescription('Please provide a vaild amount of PandaCoins to bet!')
+                    .setThumbnail(`${pic}`)
+                message.channel.send(fEmbed)
+            })
             return
         }
 
         if (coins > coindb) {
-            message.channel.send(`You do not have ${coins} PandaCoins to bet. Please check your balance and try again.`)
+            let url = client.users.fetch(userId);
+            url.then(function (targetURL) {
+                var imgURL = targetURL.displayAvatarURL();
+                let cEmbed = new Discord.MessageEmbed()
+                    .setAuthor(`${user.username}#${user.discriminator}`, `${imgURL}`)
+                    .setColor("RED")
+                    .setDescription(`You do not have ${coins} PandaCoins to bet. Please check your balance and try again.`)
+                    .setThumbnail(`${pic}`)
+                message.channel.send(cEmbed)
+                })
+return
         }
 
 
@@ -157,8 +184,8 @@ module.exports = {
             const gambleEmbed = new Discord.MessageEmbed()
                 .setColor('#000001')
                 .setTitle(user.username + `'s game table` + '\n___')
-                .addField(user.username + 'Cards', cardsMsg)
-                .addField('Dealer\'s Cards', dealerMsg)
+                .addField(user.username + 'Cards', cardsMsg, true)
+                .addField('Dealer\'s Cards', dealerMsg, true)
                 .addField(title, msg);
 
             message.channel.send(gambleEmbed);
@@ -168,36 +195,36 @@ module.exports = {
             if (player.score === 21) {
                 bet('bjWin');
                 gameOver = true;
-                await endMsg(`${user.username} has blackjack **${user.username} wins!!**`, `You have won ${bjCoins} PandaCoins! Congratulations!!`)
+                await endMsg(`${user.username} has blackjack **${user.username} wins!!**`, `You have won **${bjCoins} PandaCoins!** Congratulations!!`)
             }
             if (player.score > 21) {
                 bet('lose');
                 gameOver = true;
-                await endMsg(`${user.username} busted; PandaBot wins, **${user.username} loses**.`,` You have lost ${coins} PandaCoins....Better luck next time....`)
+                await endMsg(`${user.username} busted; PandaBot wins, **${user.username} loses**.`, ` You have lost **${coins} PandaCoins**....Better luck next time....`)
             }
             if (dealer.score === 21) {
                 bet('lose');
                 gameOver = true;
-                await endMsg(`PandaBot has blackjack; PandaBot wins, **${user.username} loses**.`,` You have lost ${coins} PandaCoins....Better luck next time....`)
+                await endMsg(`PandaBot has blackjack; PandaBot wins, **${user.username} loses**.`, ` You have lost **${coins} PandaCoins**....Better luck next time....`)
             }
             if (dealer.score > 21) {
                 bet('win');
                 gameOver = true;
-                await endMsg(`PandaBot busted; **${user.username} wins**!`,` You have won ${coins} PandaCoins! Congratulations!!`)
+                await endMsg(`PandaBot busted; **${user.username} wins**!`, ` You have won **${coins} PandaCoins!** Congratulations!!`)
             }
             if (dealer.score >= 17 && player.score > dealer.score && player.score < 21) {
                 bet('win');
                 gameOver = true;
-                await endMsg(`PandaBot stands with ${dealer.score}; **${user.username} wins**!`,` You have won ${coins} PandaCoins! Congratulations!!`)
+                await endMsg(`PandaBot stands with ${dealer.score}; **${user.username} wins**!`, ` You have won **${coins} PandaCoins!** Congratulations!!`)
             }
             if (dealer.score >= 17 && player.score < dealer.score && dealer.score < 21) {
                 bet('lose');
                 gameOver = true;
-                await endMsg(`PandaBot stands with ${dealer.score}; PandaBot wins, **${user.username} loses**.`,` You have lost ${coins} PandaCoins....Better luck next time....`)
+                await endMsg(`PandaBot stands with ${dealer.score}; PandaBot wins, **${user.username} loses**.`, ` You have lost **${coins} PandaCoins**....Better luck next time....`)
             }
             if (dealer.score >= 17 && player.score === dealer.score && dealer.score < 21) {
                 gameOver = true;
-                await endMsg(`PandaBot stands with ${dealer.score}; **It's a tie**.`,` ${coins} PandaCoins have been returned to your balance.`)
+                await endMsg(`PandaBot stands with ${dealer.score}; **It's a tie**.`, `**No PandaCoins** have been won or lost....`)
             }
         }
 
@@ -246,7 +273,7 @@ module.exports = {
         async function loop() {
             if (gameOver) return;
 
-            endMsg("BJ", '*Send `h` to hit and `s` to stand** ', false)
+            endMsg("BlackJack", '*Send `h` to hit and `s` to stand** ', false)
 
             let filter = m => m.author.id === message.author.id;
             message.channel.awaitMessages(filter, {
