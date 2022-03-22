@@ -1,7 +1,9 @@
 const prefix = (process.env.PREFIX);
+const Levels = require('discord-xp');
+const economy = require('../../database/economy')
 
-module.exports = (Discord, client, member) =>{
-        const channel = member.guild.channels.cache.find(channel => channel.name === "dropouts");
+module.exports = async (Discord, client, member) => {
+const channel = member.guild.channels.cache.find(channel => channel.name === "dropouts");
 
     if(!channel) return;
 
