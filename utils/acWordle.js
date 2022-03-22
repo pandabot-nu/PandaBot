@@ -110,8 +110,8 @@ async function LoadGame(message, guesses, answer)
 
     const attachment = new MessageAttachment(canvas.toBuffer(), 'wordle.png');
 
-    message.reply({files: [attachment] }); 
-message.send("use +guess to guess the word.")
+    message.reply("use +guess to guess the word", {files: [attachment] });
+
 }
 async function Guess(message,guesses,newGuess, answer)
 {
@@ -174,7 +174,7 @@ async function Guess(message,guesses,newGuess, answer)
 
     const attachment = new MessageAttachment(canvas.toBuffer(), 'wordle.png');
 
-    message.reply(attachment, "/n use +guess to make your guess.");
+    message.reply("use +guess to make your guess.", attachment);
 }
 function LoadNewWordle(message)
 {
