@@ -11,13 +11,15 @@ client.events = new Discord.Collection();
     require(`./handlers/${handler}`)(client, Discord)
 })
 
+const Levels = require("discord-xp");
+Levels.setURL(process.env.MONGODB_SRV)
+
 client.login(process.env.TOKEN);
 client.cachedMessageReactions = new Map();
 
-//For hosting on replit
 const http = require('http');
 const server = http.createServer((req, res) => {
   res.writeHead(200);
   res.end('ok');
 });
-server.listen(3000);
+server.listen(8080);
