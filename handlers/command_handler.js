@@ -9,8 +9,9 @@ module.exports = (client, Discord) => {
             if (command.name) {
                 client.commands.set(command.name, command)
                 console.log(`✔️ Command Loaded - ${command.name} `);
+            
             }
         }
     }
-    ['mod', 'fun', 'economy', 'reactionroles', 'roleplay', 'utility'].forEach(e => load_dir(e))
+    ['economy', 'fun', 'levels', 'mod', 'reactionroles', 'roleplay', 'utility'].forEach(e => load_dir(e))
 }
