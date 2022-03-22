@@ -1,71 +1,65 @@
 const profileModel = require('../../database/models/profileSchema')
 const economy = require('../../database/economy')
-const inventory = require("../../database/models/inventory")
 module.exports = {
-  name: "balance",
-  aliases: ["bal", "bl"],
-  permissions: [],
+  name: "addbalance",
+  aliases: ["addbal", "addb", "add"],
+  permissions: ["ADMINISTRATOR"],
+  usage: ["[user] [PandaCoin value]"],
   cooldown: 0,
-  description: "Checks the user balance",
+  description: "Adds PandaCoins to a users balance",
 
   async execute(client, message, args, Discord, cmd) {
     const mention = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.guild.members.cache.find(x => x.user.username.toLowerCase() === args.slice(0).join(" ") || x.user.username === args[0]) || message.author
-    const userId = mention.id
     const guildId = message.guild.id
-    const tarStr = await client.users.cache.get(userId)
-    const coins = await economy.getCoins(guildId, userId)
+    const userId = mention.id
+    const user = message.author
     
+    let thumb = ["https://i.imgur.com/Kkn7A8G.png", "https://i.imgur.com/OQo1xkQ.png"]
+    let pic = thumb[Math.floor(Math.random() * thumb.length)]
+    
+if (message.channel.id !== '779175380317765643')
+        return;
 
-    await inventory.findOne(
-      {
-        guildId,
-        userId
-      }, async (err, data) => {
-        if (data) {
-          const mappedData = Object.keys(data.inventory).map((key) => {
-            return `${data.inventory[key]}x ${key}`
-          }).join("\n")
-
-          if (mappedData.length < 1) {
-            let url = client.users.fetch(userId);
-            url.then(function (targetURL) {
-              var imgURL = targetURL.displayAvatarURL();
-
-              let bal3Embed = new Discord.MessageEmbed()
-                .setAuthor(`${tarStr.username}#${tarStr.discriminator}`, `${imgURL}`)
-                //.addField("Pet", "*coming soon*")
-                .addField("Balance:" ,`<a:pandacoin:868293179110203412> ${coins}`)
-                .setColor("RANDOM")
-              message.channel.send(bal3Embed)
-            })
-            return
-          }
-
-          let url = client.users.fetch(userId);
-          url.then(function (targetURL) {
-            var imgURL = targetURL.displayAvatarURL();
-
-            let balEmbed = new Discord.MessageEmbed()
-              .setAuthor(`${tarStr.username}#${tarStr.discriminator}`, `${imgURL}`)
-              //.addField("Pet", "*coming soon*")
-              .addField("Balance:", `<a:pandacoin:868293179110203412> ${coins}`)
-              .addField("Inventory:", `${mappedData}`)
-              .setColor("RANDOM")
-            message.channel.send(balEmbed)
-          })
-        } else {
-          let url = client.users.fetch(userId);
-          url.then(function (targetURL) {
-            var imgURL = targetURL.displayAvatarURL();
-
-            let bal2Embed = new Discord.MessageEmbed()
-              .setAuthor(`${tarStr.username}#${tarStr.discriminator}`, `${imgURL}`)
-              //.addField("Pet", "*coming soon*")
-              .addField("Balance:", `<a:pandacoin:868293179110203412> ${coins}`)
-              .setColor("RANDOM")
-            message.channel.send(bal2Embed)
-          })
-        }
+    if (!mention) {
+      let url = client.users.fetch(user.id);
+      url.then(function (targetURL) {
+        var imgURL = targetURL.displayAvatarURL();
+        let fEmbed = new Discord.MessageEmbed()
+          .setAuthor(`${user.username}#${user.discriminator}`, `${imgURL}`)
+          .setColor("RED")
+          .setDescription('Please tag a user to add PandaCoins to.')
+          .setThumbnail(`${pic}`)
+        message.channel.send(fEmbed)
       })
+      return
+    }
+
+    const coins = parseInt(args[1])
+    if (!coins || isNaN(coins)) {
+      let url = client.users.fetch(user.id);
+      url.then(function (targetURL) {
+        var imgURL = targetURL.displayAvatarURL();
+        let cEmbed = new Discord.MessageEmbed()
+          .setAuthor(`${user.username}#${user.discriminator}`, `${imgURL}`)
+          .setColor("RED")
+          .setDescription('Please provide a valid number of PandaCoins.')
+          .setThumbnail(`${pic}`)
+        message.channel.send(cEmbed)
+      })
+      return
+    }
+
+    const newCoins = await economy.addCoins(guildId, userId, coins)
+    let url = client.users.fetch(user.id);
+    url.then(function (targetURL) {
+      var imgURL = targetURL.displayAvatarURL();
+
+      let dEmbed = new Discord.MessageEmbed()
+        .setAuthor(`${user.username}#${user.discriminator}`, `${imgURL}`)
+        .setColor("GREEN")
+        .setDescription(`You have given **${coins} PandaCoins** to ${mention.displayName}. They now have ${newCoins} PandaCoins!`)
+        .setThumbnail(`https://i.imgur.com/dUoJGTf.png`)
+      message.channel.send(dEmbed)
+    })
   },
 }
