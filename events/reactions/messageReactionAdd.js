@@ -1,7 +1,8 @@
 const MessageModel = require('../../database/models/message');
 
 module.exports = async (Discord, client, reaction, user) => {
-        let addMemberRole = (emojiRoleMappings) => {
+  if (reaction.message.channel.id !== '779175178349182996') return;
+    let addMemberRole = (emojiRoleMappings) => {
         if (emojiRoleMappings.hasOwnProperty(reaction.emoji.id)) {
             let roleId = emojiRoleMappings[reaction.emoji.id];
             let role = reaction.message.guild.roles.cache.get(roleId);
