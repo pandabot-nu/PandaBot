@@ -2,8 +2,7 @@ const cachedMessageReactions = new Map();
 const MessageModel = require('../../database/models/message');
 
 module.exports = async (Discord, client, reaction, user) => {
-    const channel = '779175178349182996';
-    if (!channel) return;
+ if (reaction.message.channel.id !== '779175178349182996') return;
     let removeMemberRole = (emojiRoleMappings) => {
         if(emojiRoleMappings.hasOwnProperty(reaction.emoji.id)) {
             let roleId = emojiRoleMappings[reaction.emoji.id];
