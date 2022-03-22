@@ -14,20 +14,8 @@ const profileSchema = mongoose.Schema({
     type: Number,
     default: 1000,
     required: true,
-  },
-  cooldowns: {
-		WORK: Number,
-		ROB: Number,
-		ROLL: Number,
-		TRANSFER: Number,
-		WEEKLY: Number,
-		BEG: Number,
-		COLLECT: Number,
-		CRIME: Number,
-		DALILY: Number,
-		GAMBLE: Number,
-		MONTHLY: Number
-	}
+  }
+
 })
 
 module.exports = mongoose.model('profileModel', profileSchema)
